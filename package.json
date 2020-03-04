@@ -1,0 +1,45 @@
+{
+  "name": "math-illustrations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server --mode development --env.ENV=dev --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/morpheus-14/bmux.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.8.6",
+    "@babel/preset-env": "^7.4.1",
+    "@babel/preset-react": "^7.8.3",
+    "@emotion/babel-preset-css-prop": "^10.0.27",
+    "babel-loader": "^8.0.6",
+    "babel-preset-env": "^1.7.0",
+    "fork-ts-checker-webpack-plugin": "^3.1.1",
+    "ts-loader": "^6.2.1",
+    "typescript": "^3.8.3",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
+  },
+  "dependencies": {
+    "@emotion/core": "^10.0.28",
+    "@emotion/styled": "^10.0.27",
+    "@types/node": "^12.12.29",
+    "@types/react": "^16.9.23",
+    "@types/react-dom": "^16.9.5",
+    "golden-layout": "^1.5.9",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.5",
+    "redux-form": "^8.3.0",
+    "redux-saga": "^1.1.3"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://github.com/morpheus-14/math-illustrations#readme"
+}
