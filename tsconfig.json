@@ -3,7 +3,7 @@
     "incremental": true,
     "target": "es5",
     "module": "commonjs",
-    "lib": ["es2015", "es2016", "es5"],
+    "lib": ["es2015", "es2016", "es5", "dom"],
     "jsx": "react",
     "strict": true,
     "suppressImplicitAnyIndexErrors": true,
@@ -27,6 +27,7 @@
         "Static/*": ["src/static/*"],
         "Utils/*": ["src/utils/*"],
         "Animated/*": ["src/components/animated/*"],
+        "Visulisations/*": ["src/components/visualisations/*"],
         "Actions/*": ["src/actions/*"]
     },
     "esModuleInterop": true

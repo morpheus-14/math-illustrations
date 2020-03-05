@@ -1,9 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import TimesTables from 'App/visualisations/TimesTables'
 
 class App extends React.Component {
   render() {
-    return <div>Hello</div>
+    return <TimesTables />
   }
 }
 
