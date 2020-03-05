@@ -4,6 +4,7 @@ import anime from 'animejs'
 import {
   Point,
   Styles,
+  Color,
   Line,
   Circle,
   point,
@@ -18,16 +19,14 @@ const center: Point = point(500, 500)
 const radius: number = 400
 
 const modulo: number = 150
-const timesStart: number = 1
+const timesStart: number = 51
 const timesEnd: number = 100
 
 const aquaFill: Partial<Styles> = {
   fill: 'aqua'
 }
 
-const blackStroke: Partial<Styles> = {
-  strokeColor: 'black'
-}
+const stroke: (color: Color) => Partial<Styles> = (color) => ({ strokeColor: color })
 
 const getJoinPoints: (circle: Omit<Circle, 'styles'>, mod: number) => Point[] = ({ c: { x, y }, r }, mod) => {
   const pts = Array.from(Array(mod).keys())
@@ -43,6 +42,18 @@ const getJoinLines: (circle: Omit<Circle, 'styles'>, table: number, mod: number)
     a: pt,
     b: points[Math.floor(idx * table) % mod]
   } as Line))
+}
+
+const getColor: (idx: number, mul: number) => Color = (idx, mul) => {
+  const colors: Color[] = [
+    "#e056fd",
+    "#686de0",
+    "#30336b",
+    "#badc58",
+    "#ff7979",
+    "#ffbe76",
+  ]
+  return colors[Math.floor(idx / mul) % colors.length]
 }
 
 type State = {}
@@ -63,23 +74,29 @@ class TimesTables extends React.Component<State, Props> {
     if (!this.ctx) return
     const ctx: CanvasRenderingContext2D = this.ctx
     const mainCircle = circle(center, radius)
+    ctx.save()
 
-    let table = { times: timesStart }
+    let table = { times: timesStart, mod: modulo }
     anime({
       targets: table,
       times: {
         value: timesEnd,
+        duration: '40000'
+      },
+      mod: {
+        value: 100,
         duration: '20000'
       },
-      round: 2,
+      loop: true,
+      direaction: 'alternate',
       easing: 'linear',
       update: () => {
-        ctx.clearRect(0, 0, 1000, 1000)
-        drawCircle(ctx, style(mainCircle, blackStroke))
-        const lines = getJoinLines(mainCircle, table.times, modulo)
-        lines.forEach((line) => drawLine(ctx, style(line, blackStroke)))
+        ctx.clearRect(100, 100, 900, 900)
+        drawCircle(ctx, style(mainCircle, stroke('black')))
+        const lines = getJoinLines(mainCircle, table.times, parseInt(table.mod + ""))
+        lines.forEach((line, idx) => drawLine(ctx, style(line, stroke(getColor(idx, table.times)))))
       }
-    });
+    })
   }
 
   render() {

@@ -41,10 +41,12 @@ export const circle: (c: Point, r: number, styles?: Partial<Styles>) => Circle =
 export const style: <T>(shape: T, styles: Partial<Styles>) => T = (shape, styles) => ({ ...shape, styles })
 
 export const drawLine: (context: CanvasRenderingContext2D, line: Line) => void = (ctx, line) => {
+  ctx.beginPath()
   ctx.moveTo(line.a.x, line.a.y)
   ctx.lineTo(line.b.x, line.b.y)
   setStyles(ctx, line.styles)
   ctx.stroke()
+  ctx.closePath()
   ctx.restore()
 }
 
