@@ -1,10 +1,10 @@
 // TODO: Support for unit and other coordinate systems
-type Point = {
+export type Point = {
   x: number
   y: number
 }
 
-type Color = string
+export type Color = string
 
 export interface Styles {
   strokeWidth: number
@@ -22,12 +22,12 @@ export interface Styled {
   styles: Partial<Styles>
 }
 
-interface Line extends Styled {
+export interface Line extends Styled {
   a: Point
   b: Point
 }
 
-interface Circle extends Styled {
+export interface Circle extends Styled {
   c: Point
   r: number
 }
@@ -37,6 +37,8 @@ export const point: (x: number, y: number) => Point = (x, y) => ({ x, y })
 export const line: (a: Point, b: Point, styles?: Partial<Styles>) => Line = (a, b, styles = {}) => ({ a, b, styles })
 
 export const circle: (c: Point, r: number, styles?: Partial<Styles>) => Circle = (c, r, styles = {}) => ({ c, r, styles })
+
+export const style: <T>(shape: T, styles: Partial<Styles>) => T = (shape, styles) => ({ ...shape, styles })
 
 export const drawLine: (context: CanvasRenderingContext2D, line: Line) => void = (ctx, line) => {
   ctx.moveTo(line.a.x, line.a.y)
