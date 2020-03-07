@@ -9,24 +9,99 @@ import {
   Circle,
   point,
   style,
+  stroke,
   line,
   circle,
   drawLine,
   drawCircle,
 } from 'Utils/drawing'
+import {
+  Animatable
+} from 'Utils/animation'
 
-const center: Point = point(500, 500)
-const radius: number = 400
+type Props = {
+  center: Point
+  radius: number
 
-const modulo: number = 150
-const timesStart: number = 51
-const timesEnd: number = 100
-
-const aquaFill: Partial<Styles> = {
-  fill: 'aqua'
+  modulo: Animatable,
+  table: Animatable,
 }
 
-const stroke: (color: Color) => Partial<Styles> = (color) => ({ strokeColor: color })
+class TimesTables extends React.Component<Partial<Props>> {
+  _canvas: RefObject<any>
+  ctx: CanvasRenderingContext2D | null
+
+  static defaultProps: Props = {
+    center: point(500, 500),
+    radius: 400,
+    modulo: {
+      start: 150,
+      end: 100,
+      duration: 20,
+    },
+    table: {
+      start: 51,
+      end: 100,
+      duration: 40
+    }
+  }
+
+  constructor(props) {
+    super(props)
+    this._canvas = React.createRef()
+    this.ctx = null
+  }
+
+  componentDidMount() {
+    this.ctx = this._canvas.current.getContext('2d')
+    if (!this.ctx) return
+
+    init(this.ctx, this.props as Props)
+  }
+
+  render() {
+    return (
+      <Container id="times" ref={this._canvas} width="1000" height="1000" />
+    )
+  }
+}
+
+const Container = styled.canvas({
+  height: '1000px',
+  width: '1000px'
+})
+
+
+////
+const init: (context: CanvasRenderingContext2D | null, props: Props) => void =
+  (ctx, { center, radius, modulo, table }) => {
+    if (!ctx) return
+    const mainCircle = circle(center, radius)
+    ctx.save()
+
+    let animator = { table: table.start, modulo: modulo.start }
+    anime({
+      targets: animator,
+      table: {
+        value: table.end,
+        duration: table.duration * 1000
+      },
+      modulo: {
+        value: modulo.end,
+        duration: modulo.duration * 1000
+      },
+      loop: true,
+      direction: 'alternate',
+      easing: 'linear',
+      update: () => {
+        ctx.clearRect(100, 100, 900, 900)
+        drawCircle(ctx, style(mainCircle, stroke(getColor(6, 1))))
+        const lines = getJoinLines(mainCircle, animator.table, parseInt(animator.modulo.toString()))
+        lines.forEach((line, idx) => drawLine(ctx, style(line, stroke(getColor(idx, animator.table)))))
+      }
+    })
+  }
+
 
 const getJoinPoints: (circle: Omit<Circle, 'styles'>, mod: number) => Point[] = ({ c: { x, y }, r }, mod) => {
   const pts = Array.from(Array(mod).keys())
@@ -55,60 +130,5 @@ const getColor: (idx: number, mul: number) => Color = (idx, mul) => {
   ]
   return colors[Math.floor(idx / mul) % colors.length]
 }
-
-type State = {}
-
-type Props = {}
-
-class TimesTables extends React.Component<State, Props> {
-  _canvas: RefObject<any>
-  ctx: CanvasRenderingContext2D | null
-  constructor(props) {
-    super(props)
-    this._canvas = React.createRef()
-    this.ctx = null
-  }
-
-  componentDidMount() {
-    this.ctx = this._canvas.current.getContext('2d')
-    if (!this.ctx) return
-    const ctx: CanvasRenderingContext2D = this.ctx
-    const mainCircle = circle(center, radius)
-    ctx.save()
-
-    let table = { times: timesStart, mod: modulo }
-    anime({
-      targets: table,
-      times: {
-        value: timesEnd,
-        duration: '40000'
-      },
-      mod: {
-        value: 100,
-        duration: '20000'
-      },
-      loop: true,
-      direaction: 'alternate',
-      easing: 'linear',
-      update: () => {
-        ctx.clearRect(100, 100, 900, 900)
-        drawCircle(ctx, style(mainCircle, stroke('black')))
-        const lines = getJoinLines(mainCircle, table.times, parseInt(table.mod + ""))
-        lines.forEach((line, idx) => drawLine(ctx, style(line, stroke(getColor(idx, table.times)))))
-      }
-    })
-  }
-
-  render() {
-    return (
-      <Container id="times" ref={this._canvas} width="1000" height="1000" />
-    )
-  }
-}
-
-const Container = styled.canvas({
-  height: '1000px',
-  width: '1000px'
-})
 
 export default TimesTables
